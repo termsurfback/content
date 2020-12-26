@@ -1,0 +1,43 @@
+
+write document
+  field document
+  write chord, |<!doctype html>|
+  write wheel
+    hitch wheel, reach document, node
+    write class, class node
+      hitch node, reach block
+
+write node
+  field node, class node
+  write class, class node start
+  write sieve, write class, class content
+  write class, class node end
+
+write attribute list
+  field attribute, match chain
+
+  write wheel
+    write chord, reach attribute, name
+    write chord, |=|
+    write chord, |'|
+    write class, class attribute value
+      field value, reach attribute, value
+    write chord, |'|
+
+write node start
+  write chord, |<|
+  write chord, reach node, name
+  write chain
+    write class, class blank
+    write class, class attribute list
+  write chord, |>|
+
+write node end
+  write chord, |</|
+  write chord, reach node, name
+  write chord, |>|
+
+write fragment
+  write
+
+write attribute value

@@ -1,0 +1,12 @@
+
+stack @mountbuild/content-grammar
+  brief |Grammars for parsing arbitrary strings, binaries, or other content|
+  brand |information|
+  brand |computation|
+  brand |library|
+  drive |Lance Pollard <lp@elk.fm>|
+  mount ./mount
+  match ./match
+  draft ./draft
+  flash ./flash/house.gif
+  share |Apache 2.0|

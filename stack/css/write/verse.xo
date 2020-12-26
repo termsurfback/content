@@ -1,0 +1,86 @@
+
+mount @flame/snake
+
+write css
+  field sheet
+
+  write wheel, share sheet, rule
+    write class, class rule
+      mount rule, share block
+
+write rule
+  field rule
+
+  write check
+    share rule, comment, state
+    write match, share state comment block
+      write class, class comment block
+        mount comment, share rule, comment
+    write match, share state comment line
+      write class, class comment line
+        mount comment, share rule, comment
+
+  write check
+    share rule, state
+    write match, share state media
+      write class, class media
+        mount media, share rule
+    write match, share state keyframe list
+      write class, class keyframe list
+        mount list, share rule
+    write match, share state selector
+      write class, class selector
+        mount media, share rule
+    write match, share state font
+      write class, class font
+        mount media, share rule
+
+write comment block
+write comment line
+
+write selector
+  field selector
+
+  write bound, |,\n|
+    share selector, path
+    write slice, share block
+  write slice, | {|
+  write slice, |\n|
+  write chain, share selector, declaration
+    write class, class declaration
+      mount declaration, share declaration
+  write slice, |\n|
+  write slice, |}|
+
+write declaration
+  field declaration
+
+  write check, share declaration, state
+    write match, share state declaration background
+    write catch
+      write class, class declaration string
+        mount declaration, share declaration
+
+write font
+  write slice, |@font-face {|
+  write slice, |\n|
+  write class, class declaration string
+    mount key, |family|
+    mount value, share family
+  write slice, |\n|
+  write class, class font url list
+  write slice, |\n|
+  write slice, |}|
+
+write declaration string
+  field key, match chord
+  field value, match chord
+
+  write slice, share key
+  write slice, |: |
+  write slice, |"|
+  write slice, share value
+  write slice, |"|
+  write slice, |;|
+
+write font url list

@@ -1,0 +1,22 @@
+
+class request
+  field method, match method
+  field uri, match uri
+  field header, match chain, match request header
+  field content
+
+class response
+  field header, match chain, match response header
+  field status
+  field content
+
+class status
+
+class method
+
+class header
+  field name
+  field value
+
+class header accept
+  match header

@@ -1,0 +1,22 @@
+http://www.libpng.org/pub/png/spec/1.2/PNG-Contents.html
+
+read first-8
+  137 80 78 71 13 10 26 10
+
+read chunk
+  read chunk-length
+
+read chunk-length
+  4-byte unsigned integer
+
+read chunk-type
+  4-byte unsigned integer
+
+read chunk-data
+
+read chunk-CRC
+  4-byte unsigned integer
+
+http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html
+http://www.libpng.org/pub/png/spec/iso/
+http://www.libpng.org/pub/mng/spec/#objects

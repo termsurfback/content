@@ -1,0 +1,944 @@
+
+match message
+  match crown
+    match class, class request
+    match class, class response
+
+match request
+  match class, class request line
+  match chain
+    match crown
+      match class, class general header
+      match class, class request header
+      match class, class entity header
+    match class, class crlf
+  match class, class crlf
+  match sieve
+    match class, class message-body
+
+match response
+  match class, class status line
+  match chain
+    match crown
+      match class, class general header
+      match class, class response header
+      match class, class entity header
+    match class, class crlf
+  match class, class crlf
+  match sieve, class message-body
+
+match request line
+  match class, class method
+  match class, class SP
+  match class, class request uri
+  match class, class SP
+  match class, class version
+  match class, class crlf
+
+match method
+  match crown
+    match chord, |OPTIONS|
+    match chord, |GET|
+    match chord, |HEAD|
+    match chord, |POST|
+    match chord, |PUT|
+    match chord, |DELETE|
+    match chord, |TRACE|
+    match chord, |CONNECT|
+    match class, class extension method
+
+match version
+  match slice, |HTTP|
+  match slice, |/|
+  match class, class DIGIT
+  match slice, |.|
+  match class, class DIGIT
+
+match general header
+  match crown
+    match class, class Cache-Control
+    match class, class Connection
+    match class, class Date
+    match class, class Pragma
+    match class, class Trailer
+    match class, class Transfer-Encoding
+    match class, class Upgrade
+    match class, class Via
+    match class, class Warning
+
+match entity header
+  match crown
+    match class, class Allow
+    match class, class Content-Encoding
+    match class, class Content-Language
+    match class, class Content-Length
+    match class, class Content-Location
+    match class, class Content-MD5
+    match class, class Content-Range
+    match class, class Content-Type
+    match class, class Expires
+    match class, class Last-Modified
+    match class, class extension-header
+
+match status line
+  match class, class version
+  match class, class SP
+  match class, class Status-Code
+  match class, class SP
+  match class, class Reason-Phrase
+  match class, class crlf
+
+match Status-Code
+  match crown
+    match slice, |100|
+    match slice, |101|
+    match slice, |200|
+    match slice, |201|
+    match slice, |202|
+    match slice, |203|
+    match slice, |204|
+    match slice, |205|
+    match slice, |206|
+    match slice, |300|
+    match slice, |301|
+    match slice, |302|
+    match slice, |303|
+    match slice, |304|
+    match slice, |305|
+    match slice, |307|
+    match slice, |400|
+    match slice, |401|
+    match slice, |402|
+    match slice, |403|
+    match slice, |404|
+    match slice, |405|
+    match slice, |406|
+    match slice, |407|
+    match slice, |408|
+    match slice, |409|
+    match slice, |410|
+    match slice, |411|
+    match slice, |412|
+    match slice, |413|
+    match slice, |414|
+    match slice, |415|
+    match slice, |416|
+    match slice, |417|
+    match slice, |500|
+    match slice, |501|
+    match slice, |502|
+    match slice, |503|
+    match slice, |504|
+    match slice, |505|
+    match class, class extension-code
+
+match octet
+  match count, 8, match block
+
+match char
+  match slice, match bound, 0 - 127
+
+match UPALPHA
+  match slice, match bound, A - Z
+
+match LOALPHA
+  match slice, match bound, a - z
+
+match ALPHA
+  match crown
+    match class, class UPALPHA
+    match class, class LOALPHA
+
+match DIGIT
+  match slice, match bound, 0-9
+
+match CTL
+  match crown
+    match slice, match bound, 0 - 31
+    match slice, 127
+
+match CR
+  match slice, 13
+
+match LF
+  match slice, 10
+
+match SP
+  match slice, 32
+
+match HT
+  match slice, 9
+
+match double quote <">
+  match slice, 34
+
+match crlf
+  match CR
+  match LF
+
+match LWS            = [crlf] 1*( SP | HT )
+
+match TEXT           = <any OCTET except CTLs,
+                        but including LWS>
+
+match HEX
+  match crown
+    match slice, A-F
+    match slice, a-f
+    match DIGIT
+
+match token          = 1*<any CHAR except CTLs or separators>
+
+match separator list
+  match crown
+    match slice, |(|
+    match slice, |)|
+    match slice, |<|
+    match slice, |>|
+    match slice, |@|
+    match slice, |,|
+    match slice, |;|
+    match slice, |:|
+    match slice, |\\|
+    match slice, |\||
+    match slice, |/|
+    match slice, |[|
+    match slice, |]|
+    match slice, |?|
+    match slice, |=|
+    match slice, |{|
+    match slice, |}|
+    match class, class SP
+    match class, class HT
+
+match comment
+  match slice, |(|
+  match chain, class comment body
+  match slice, |)|
+
+match comment body
+  match crown
+    match class, class ctext
+    match class, class quoted-pair
+    match class, class comment
+
+match ctext
+  match class, class text
+    match leave
+      match crown
+        match slice, |(|
+        match slice, |)|
+
+match quoted-string
+  match class, class double quote
+  match chain
+    match crown
+      match class, class qdtext
+      match class, class quoted-pair
+  match class, class double quote
+
+match qdtext
+  match class, class text
+    match leave, class double quote
+
+match quoted-pair
+  match slice, slice |\|
+  match class, class CHAR
+
+match http_URL
+  match slice, |http:|
+  match slice, |//|
+  match class, class host
+  match sieve
+    match slice, |:|
+    match class, class port
+  match sieve
+    match class, class, abs_path
+    match sieve
+      match slice, |?|
+      match class, class query
+
+match HTTP-date
+  match crown
+    match class, class rfc1123-date
+    match class, class rfc850-date
+    match class, class asctime-date
+
+match rfc1123-date
+  match class, class short weekday
+  match slice, |,|
+  match class, class SP
+  match class, class date1
+  match class, class SP
+  match class, class time
+  match class, class SP
+  match slice, |GMT|
+
+match rfc850-date
+  match class, class weekday
+  match slice, |,|
+  match class, class SP
+  match class, class date2
+  match class, class SP
+  match class, class time
+  match class, class SP
+  match slice, |GMT|
+
+match asctime-date
+  match class, class short weekday
+  match class, class SP
+  match class, class date3
+  match class, class SP
+  match class, class time
+  match class, class SP
+  match class, class 4DIGIT
+
+match date1
+  match class, class 2DIGIT
+  match class, class SP
+  match class, class month
+  match class, class SP
+  match class, class 4DIGIT
+
+match date2
+  match class, class 2DIGIT
+  match slice, |-|
+  match class, class month
+  match slice, |-|
+  match class, class 2DIGIT
+
+match date3
+  match class, class month
+  match class, class SP
+  match crown
+    match class, class 2DIGIT
+    match chunk
+      match class, class SP
+      match class, class 1DIGIT
+
+match time
+  match class, class 2DIGIT
+  match slice, |:|
+  match class, class 2DIGIT
+  match slice, |:|
+  match class, class 2DIGIT
+
+match short weekday
+  match crown
+    match slice, |Mon|
+    match slice, |Tue|
+    match slice, |Wed|
+    match slice, |Thu|
+    match slice, |Fri|
+    match slice, |Sat|
+    match slice, |Sun|
+
+match weekday
+  match crown
+    match slice, |Monday|
+    match slice, |Tuesday|
+    match slice, |Wednesday|
+    match slice, |Thursday|
+    match slice, |Friday|
+    match slice, |Saturday|
+    match slice, |Sunday|
+
+match month
+  match crown
+    match slice, |Jan|
+    match slice, |Feb|
+    match slice, |Mar|
+    match slice, |Apr|
+    match slice, |May|
+    match slice, |Jun|
+    match slice, |Jul|
+    match slice, |Aug|
+    match slice, |Sep|
+    match slice, |Oct|
+    match slice, |Nov|
+    match slice, |Dec|
+
+match delta-seconds
+  match class, class DIGIT
+
+match charset
+  match class, class token
+
+match content-coding
+  match class, class token
+
+match transfer-coding
+  match crown
+    match slice, |chunked|
+    match class, class transfer-extension
+
+match transfer-extension
+  match class, class token
+  match chain
+    match slice, |;|
+    match class, class parameter
+
+match parameter
+  match class, class attribute
+  match slice, |=|
+  match class, class value
+
+match attribute
+  match class, class token
+
+match value
+  match crown
+    match class, class token
+    match class, class quoted-string
+
+match Chunked-Body
+  match chain, class chunk
+  match class, class last-chunk
+  match class, class trailer
+  match class, class crlf
+
+match chunk
+  match class, class chunk-size
+  match sieve, match class, class chunk-extension
+  match class, class crlf
+  match class, class chunk-data
+  match class, class crlf
+
+match chunk-size
+  match class, class HEX
+
+match last-chunk
+  match chord, |0|
+  match sieve
+    match class, class chunk-extension
+  match class, class crlf
+
+match chunk-extension
+  match chain
+    match chord, |;|
+    match class, class chunk-ext-name
+    match sieve
+      match chord, |=|
+      match class, class chunk-ext-val
+
+match chunk-ext-name
+  match class, class token
+
+match chunk-ext-val
+  match crown
+    match class, class token
+    match class, class quoted-string
+
+match chunk-data
+  match class, class chunk-size(OCTET)
+
+match trailer
+  match chain
+    match class, class entity header
+    match class, class crlf
+
+match media-type
+  match class, class type
+  match chord, |/|
+  match class, class subtype
+  match chain
+    match chord, |;|
+    match class, class parameter
+
+match type
+  match class, class token
+
+match subtype
+  match class, class token
+
+match product
+  match class, class token
+  match sieve
+    match chord, |/|
+    match class, class product-version
+
+match product-version
+  match class, class token
+
+match qvalue
+  match crown
+    match chunk
+      match chord, |0|
+      match sieve
+        match chord, |.|
+        0*3DIGIT
+    ( |1| [ |.| 0*3("0") ] )
+
+language-tag  = primary-tag *( "-" subtag )
+primary-tag   = 1*8ALPHA
+subtag        = 1*8ALPHA
+entity-tag = [ weak ] opaque-tag
+weak       = "W/"
+opaque-tag = quoted-string
+
+range-unit       = bytes-unit | other-range-unit
+      bytes-unit       = "bytes"
+      other-range-unit = token
+
+generic-message = start-line
+                          *(message-header crlf)
+                          crlf
+                          [ message-body ]
+
+match start-line
+  match crown
+    match class, class request line
+    match class, class status line
+
+        message-header = field-name ":" [ field-value ]
+       field-name     = token
+       field-value    = *( field-content | LWS )
+       field-content  = <the OCTETs making up the field-value
+                        and consisting of either *TEXT or combinations
+                        of token, separators, and quoted-string>
+
+                        message-body = entity-body
+                    | <entity-body encoded as per Transfer-Encoding>
+
+match extension method
+  match class, class token
+
+match request uri
+  match crown
+    match chord, |*|
+    match class, class absoluteURI
+    match class, class abs_path
+    match class, class authority
+
+match request header
+  match crown
+    match class, class Accept
+    match class, class Accept-Charset
+    match class, class Accept-Encoding
+    match class, class Accept-Language
+    match class, class Authorization
+    match class, class Expect
+    match class, class From
+    match class, class Host
+    match class, class If-Match
+    match class, class If-Modified-Since
+    match class, class If-None-Match
+    match class, class If-Range
+    match class, class If-Unmodified-Since
+    match class, class Max-Forwards
+    match class, class Proxy-Authorization
+    match class, class Range
+    match class, class Referer
+    match class, class TE
+    match class, class User-Agent
+
+extension-code = 3DIGIT
+Reason-Phrase  = *<TEXT, excluding CR, LF>
+
+match response header
+  match crown
+    match class, class Accept-Ranges
+    match class, class Age
+    match class, class ETag
+    match class, class Location
+    match class, class Proxy-Authenticate
+    match class, class Retry-After
+    match class, class Server
+    match class, class Vary
+    match class, class WWW-Authenticate
+
+match extension-header
+  match class, class message-header
+
+match entity-body
+  match chain, class OCTET
+
+match Accept
+  match slice, |Accept|
+  match slice, |:|
+  match floor, 1
+    match class, class media-range
+    match sieve, class accept-params
+
+match media-range
+  match media-range block
+  match chain
+    match slice, |;|
+    match class, class parameter
+
+match media-range block
+  match crown
+    match slice, |*/*|
+    match chunk
+      match class, class type
+      match slice, |/|
+      match slice, |*|
+    match chunk
+      match class, class type
+      match slice, |/|
+      match class, class subtype
+
+match accept-params
+  match slice, |;|
+  match slice, |q|
+  match slice, |=|
+  match class, class qvalue
+  match chain, class accept-extension
+
+match accept-extension
+  match slice, |;|
+  match class, class token
+  match sieve
+    match slice, |=|
+    match crown
+      match class, class token
+      match class, class quoted-string
+
+match Accept-Charset
+  match slice, |Accept-Charset|
+  match slice, |:|
+  match count, 1
+    match crown
+      match class, class charset
+      match slice, |*|
+    match sieve
+      match slice, |;|
+      match slice, |q|
+      match slice, |=|
+      match class, class qvalue
+
+match Accept-Encoding
+  match slice, |Accept-Encoding|
+  match slice, |:|
+  match count, 1
+    match class, class codings
+    match sieve
+      match slice, |;|
+      match slice, |q|
+      match slice, |=|
+      match class, class qvalue
+
+match codings
+  match crown
+    match class, class content-coding
+    match slice, |*|
+
+match Accept-Language
+  match slice, |Accept-Language|
+  match slice, |:|
+  match count, 1
+    match class, class language-range
+    match sieve
+      match slice, |;|
+      match slice, |q|
+      match slice, |=|
+      match class, class qvalue
+
+match language-range
+  match crown
+    match chunk
+      match count 1, class 8ALPHA
+      match chain,
+        match slice, |-|
+        match count, 1, class 8ALPHA
+    match slice, |*|
+
+match Accept-Ranges
+  match slice, |Accept-Ranges|
+  match slice, |:|
+  match class, class acceptable-ranges
+
+match acceptable-ranges
+  match crown
+    match count, 1
+      match class, class range-unit
+    match slice, |none|
+
+match Age
+  match slice, |Age|
+  match slice, |:|
+  match class, class age-value
+
+match age-value
+  match class, class delta-seconds
+
+match Allow
+  match slice, |Allow|
+  match slice, |:|
+  match floor, 1, class method
+
+match Authorization
+  match slice, |Authorization|
+  match slice, |:|
+  match class, class credentials
+
+match Cache-Control
+  match slice, |Cache-Control|
+  match slice, |:|
+  match count, 1, class cache-directive
+
+match cache-directive
+  match crown
+    match class, class cache-request-directive
+    match class, class cache-response-directive
+
+match cache-request-directive
+  match crown
+    match slice, |no-cache|
+    match slice, |no-store|
+    match chunk
+      match slice, |max-age|
+      match slice, |=|
+      match class, class delta-seconds
+    match chunk
+      match slice, |max-stale|
+      match sieve
+        match slice, |=|
+        match class, class delta-seconds
+    match chunk
+      match slice, |min-fresh|
+      match slice, |=|
+      match class, class delta-seconds
+    match slice, |no-transform|
+    match slice, |only-if-cached|
+    match class, class cache-extension
+
+match cache-response-directive
+  match crown
+    match slice, |public|
+    match chunk
+      match slice, |private|
+      match sieve
+        match slice, |=|
+        match slice, |"|
+        match count, 1, class field-name
+        match slice, |"|
+    match chunk
+      match slice, |no-cache|
+      match sieve
+        match slice, |=|
+        match slice, |"|
+        match count, 1, class field-name
+        match slice, |"|
+    match slice, |no-store|
+    match slice, |no-transform|
+    match slice, |must-revalidate|
+    match slice, |proxy-revalidate|
+    match slice, |max-age| |=| delta-seconds
+    match slice, |s-maxage| |=| delta-seconds
+    match class, class cache-extension
+
+match cache-extension
+  match class, class token
+  match sieve
+    match chord, |=|
+    match crown
+      match class, class token
+      match class, class quoted-string
+
+match Connection
+  match chord, |Connection|
+  match chord, |:|
+  match count, 1, class connection-token
+
+match connection-token
+  match class, class token
+
+match Content-Encoding
+  match chord, |Content-Encoding|
+  match chord, |:|
+  match count, 1, class content-coding
+
+match Content-Language
+  match chord, |Content-Language|
+  match chord, |:|
+  match count, 1, class language-tag
+
+match Content-Length
+  match chord, |Content-Length|
+  match chord, |:|
+  match count, 1, class DIGIT
+
+match Content-Location
+  match chord, |Content-Location|
+  match chord, |:|
+  match crown
+    match class, class absoluteURI
+    match class, class relativeURI
+
+match Content-MD5
+  match chord, |Content-MD5|
+  match chord, |:|
+  match class, class md5-digest
+
+match md5-digest
+  match chord, <base64 of 128 bit MD5 digest as per RFC 1864>
+
+match Content-Range
+  match chord, |Content-Range|
+  match chord, |:|
+  match class, class content-range-spec
+
+match content-range-spec
+  match class, class byte-content-range-spec
+
+match byte-content-range-spec
+  match class, class bytes-unit
+  match class, class SP
+  match class, class byte-range-resp-spec
+  match chord, |/|
+  match crown
+    match class, class instance-length
+    match chord, |*|
+
+match byte-range-resp-spec
+  match crown
+    match chunk
+      match class, class first-byte-pos
+      match chord, |-|
+      match class, class last-byte-pos
+    match chord, |*|
+
+match instance-length
+  match count, 1, class DIGIT
+
+match Content-Type
+  match chord, |Content-Type|
+  match chord, |:|
+  match class, class media-type
+
+match Date
+  match chord, |Date|
+  match chord, |:|
+  match class, class HTTP-date
+
+match ETag
+  match chord, |ETag|
+  match chord, |:|
+  match class, class entity-tag
+
+match Expect
+  match chord, |Expect|
+  match chord, |:|
+  match count, 1, class expectation
+
+      expectation  =  "100-continue" | expectation-extension
+      expectation-extension =  token [ "=" ( token | quoted-string )
+                               *expect-params ]
+      expect-params =  ";" token [ "=" ( token | quoted-string ) ]
+
+      Expires = "Expires" ":" HTTP-date
+
+       From   = "From" ":" mailbox
+
+match Host
+  match chord, |Host|
+  match chord, |:|
+  match class, class host
+  match sieve
+    match chord, |:|
+    match class, class port
+
+match If-Match
+  match chord, |If-Match|, sense false
+  match chord, |:|
+  match crown
+    match chord, |*|
+    match count, 1, class entity-tag
+
+       If-Modified-Since = "If-Modified-Since" ":" HTTP-date
+       If-None-Match = "If-None-Match" ":" ( "*" | 1#entity-tag )
+        If-Range = "If-Range" ":" ( entity-tag | HTTP-date )
+      If-Unmodified-Since = "If-Unmodified-Since" ":" HTTP-date
+       Last-Modified  = "Last-Modified" ":" HTTP-date
+       Location       = "Location" ":" absoluteURI
+       Max-Forwards   = "Max-Forwards" ":" 1*DIGIT
+Pragma            = "Pragma" ":" 1#pragma-directive
+       pragma-directive  = "no-cache" | extension-pragma
+       extension-pragma  = token [ "=" ( token | quoted-string ) ]       Proxy-Authenticate  = "Proxy-Authenticate" ":" 1#challenge
+       Proxy-Authorization     = "Proxy-Authorization" ":" credentials
+ranges-specifier = byte-ranges-specifier
+       byte-ranges-specifier = bytes-unit "=" byte-range-set
+       byte-range-set  = 1#( byte-range-spec | suffix-byte-range-spec )
+       byte-range-spec = first-byte-pos "-" [last-byte-pos]
+       first-byte-pos  = 1*DIGIT
+       last-byte-pos   = 1*DIGIT
+       suffix-byte-range-spec = "-" suffix-length
+       suffix-length = 1*DIGIT
+             Range = "Range" ":" ranges-specifier
+       Referer        = "Referer" ":" ( absoluteURI | relativeURI )
+       Retry-After  = "Retry-After" ":" ( HTTP-date | delta-seconds )
+       Server         = "Server" ":" 1*( product | comment )
+TE        = "TE" ":" #( t-codings )
+       t-codings = "trailers" | ( transfer-extension [ accept-params ] )
+              Trailer  = "Trailer" ":" 1#field-name
+     Transfer-Encoding       = "Transfer-Encoding" ":" 1#transfer-coding
+
+       Upgrade        = "Upgrade" ":" 1#product
+       User-Agent     = "User-Agent" ":" 1*( product | comment )
+       Vary  = "Vary" ":" ( "*" | 1#field-name )
+Via =  "Via" ":" 1#( received-protocol received-by [ comment ] )
+
+match received-protocol
+  match sieve
+    match class, class protocol-name
+    match chord, |/|
+  match class, class protocol-version
+
+match protocol-name
+  match class, class token
+
+match protocol-version
+  match class, class token
+
+match received-by
+  match crown
+    match chunk
+      match class, class host
+      match sieve
+        match chord, |:|
+        match class, class port
+    match class, class pseudonym
+
+match pseudonym
+  match class, class token
+
+match Warning
+  match chord, |Warning|
+  match chord, |:|
+  match count, 1, class warning-value
+
+match warning-value
+  match class, class warn-code
+  match class, class SP
+  match class, class warn-agent
+  match class, class SP
+  match class, class warn-text
+  match sieve
+    match class, class SP
+    match class, class warn-date
+
+match warn-code
+  match count, 3, class DIGIT
+
+match warn-agent
+  match crown
+    match chunk
+      match class, class host
+      match sieve
+        match chord, |:|
+        match class, class port
+    match class, class pseudonym
+
+match warn-text
+  match class, class quoted-string
+
+match warn-date
+  match chord, |"|
+  match class, class HTTP-date
+  match chord, |"|
+
+match WWW-Authenticate
+  match chord, |WWW-Authenticate|
+  match chord, |:|
+  match count, 1, class challenge

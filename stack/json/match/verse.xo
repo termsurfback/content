@@ -1,0 +1,121 @@
+
+trace json
+  trace class, class value
+
+trace value
+  trace crown
+    trace class, class string
+    trace class, class number
+    trace class, class object
+    trace class, class array
+    trace class, class boolean
+    trace class, class null
+
+trace string
+  trace shard, #u0022
+  trace chain
+    trace crown
+      trace class, class esc
+      trace class, class safecodepoint
+  trace shard, #u0022
+
+trace number
+  trace sieve
+    trace shard, #u002D
+    trace class, class integer
+    trace sieve
+      trace shard, #u002E
+      trace floor, 1
+        trace bound, #u0030, #u0039
+    trace sieve, trace class, class exponent
+
+trace integer
+  trace crown
+    trace shard, #u0030
+    trace class, class nonzero integer
+
+class nonzero integer
+  trace bound, #u0031, #u0039
+  trace chain
+    trace bound, #u0030, #u0039
+
+trace exponent
+  trace crown
+    trace shard, |E|
+    trace shard, |e|
+  trace sieve
+    trace crown
+      trace shard, |+|
+      trace shard, |-|
+  trace class, class integer
+
+trace object
+  trace shard, #u007B
+  trace chain, class whitespace
+  trace sieve
+    trace class, class pair
+    trace chain, class whitespace
+    trace chain
+      trace chain, class whitespace
+      trace shard, #u002C
+      trace chain, class whitespace
+      trace class, class pair
+  trace chain, class whitespace
+  trace shard, #u007D
+
+trace pair
+   trace class, class string
+   trace chain, class whitespace
+   trace shard, |:|
+   trace chain, class whitespace
+   trace class, class value
+
+trace array
+  trace shard, #u005B
+  trace chain, class whitespace
+  trace sieve
+    trace class, class value
+    trace chain
+      trace class, class crown
+      trace class, class value
+  trace chain, class whitespace
+  trace shard, #u005D
+
+trace boolean
+  trace crown
+    trace shard, |true|
+    trace shard, |false|
+
+trace null
+  trace shard, |null|
+
+trace whitespace
+  trace crown
+    trace shard, #u0009
+    trace shard, #u000A
+    trace shard, #u000D
+    trace shard, #u0020
+
+trace esc
+  trace shard, |\\|
+  trace crown
+    trace crown
+      trace shard, |"|
+      trace shard, |\\|
+      trace shard, |/|
+      trace shard, |b|
+      trace shard, |f|
+      trace shard, |n|
+      trace shard, |r|
+      trace shard, |t|
+    trace class, class unicode
+
+trace unicode
+  trace shard, |u|
+  trace count, 4, class hex
+
+trace hex
+  trace crown
+    trace slice, 0, 9
+    trace slice, a, f
+    trace slice, A, F

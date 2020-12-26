@@ -1,0 +1,3 @@
+
+match /xo/:trace+
+  batch ../xo/:trace

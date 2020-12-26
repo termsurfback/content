@@ -1,0 +1,796 @@
+
+https://github.com/foliojs/pdfkit/tree/v0.7.2/lib
+https://github.com/mozilla/pdf.js/blob/master/src/core/parser.js
+
+default margins
+    top: 72
+    left: 72
+    bottom: 72
+    right: 72
+
+SIZES =
+    '4A0': [4767.87, 6740.79]
+    '2A0': [3370.39, 4767.87]
+    A0: [2383.94, 3370.39]
+    A1: [1683.78, 2383.94]
+    A2: [1190.55, 1683.78]
+    A3: [841.89, 1190.55]
+    A4: [595.28, 841.89]
+    A5: [419.53, 595.28]
+    A6: [297.64, 419.53]
+    A7: [209.76, 297.64]
+    A8: [147.40, 209.76]
+    A9: [104.88, 147.40]
+    A10: [73.70, 104.88]
+    B0: [2834.65, 4008.19]
+    B1: [2004.09, 2834.65]
+    B2: [1417.32, 2004.09]
+    B3: [1000.63, 1417.32]
+    B4: [708.66, 1000.63]
+    B5: [498.90, 708.66]
+    B6: [354.33, 498.90]
+    B7: [249.45, 354.33]
+    B8: [175.75, 249.45]
+    B9: [124.72, 175.75]
+    B10: [87.87, 124.72]
+    C0: [2599.37, 3676.54]
+    C1: [1836.85, 2599.37]
+    C2: [1298.27, 1836.85]
+    C3: [918.43, 1298.27]
+    C4: [649.13, 918.43]
+    C5: [459.21, 649.13]
+    C6: [323.15, 459.21]
+    C7: [229.61, 323.15]
+    C8: [161.57, 229.61]
+    C9: [113.39, 161.57]
+    C10: [79.37, 113.39]
+    RA0: [2437.80, 3458.27]
+    RA1: [1729.13, 2437.80]
+    RA2: [1218.90, 1729.13]
+    RA3: [864.57, 1218.90]
+    RA4: [609.45, 864.57]
+    SRA0: [2551.18, 3628.35]
+    SRA1: [1814.17, 2551.18]
+    SRA2: [1275.59, 1814.17]
+    SRA3: [907.09, 1275.59]
+    SRA4: [637.80, 907.09]
+    EXECUTIVE: [521.86, 756.00]
+    FOLIO: [612.00, 936.00]
+    LEGAL: [612.00, 1008.00]
+    LETTER: [612.00, 792.00]
+    TABLOID: [792.00, 1224.00]
+
+verse pdf 1.7
+  verse class, class version
+  verse class, class four
+
+verse version
+  verse slice, |%PDF-|
+  verse slice, |1.7|
+
+verse four
+  %\xFF\xFF\xFF\xFF
+
+verse ridge cloud
+
+verse curve brand
+
+verse write chunk
+  verse write block BT
+  verse point, class write chunk place
+  verse point, class write chunk brand
+  verse point, class write chunk style
+  verse point, class write chunk curve space
+  verse point, class write chunk point group
+  verse write block ET
+
+verse write chunk point group
+
+verse write chunk point
+  if xoffset or yoffset
+    verse point, class write chunk place
+      flush i
+      merge cross scale
+        x + pos.xOffset * scale
+      merge climb scale
+        y + pos.yOffset * scale
+      flush i + 1
+  else
+    verse point, class write chunk place
+      flush i
+      merge cross scale
+        x
+      merge climb scale
+        y
+      flush i + 1
+
+
+verse write chunk brand
+  verse write /
+  verse reach, reach brand, prime
+  verse point, class space
+  verse reach, reach brand, scale
+  verse point, class space
+  verse write, Tm
+
+verse write chunk place
+  field cross point
+  field climb point
+
+  verse write 1 0 0 1
+  verse point, class space
+  verse reach, reach cross point
+  verse point, class space
+  verse reach, reach climb point
+  verse point, class space
+  verse write block Tm
+
+
+verse clear curve
+  verse write block
+    h
+
+verse place curve cross scale
+  field cross scale
+  verse reach, reach cross scale
+  verse write block
+    w
+
+verse place curve point style
+    BUTT: 0
+    ROUND: 1
+    SQUARE: 2
+  verse reach, reach style
+  verse write block
+    J
+
+verse place curve joint style
+  _JOIN_STYLES:
+    MITER: 0
+    ROUND: 1
+    BEVEL: 2
+  verse reach, reach style
+  verse write block
+    j
+
+verse place miterLimit
+  verse reach, reach count
+  verse write block
+    M
+
+verse shift place
+  field x
+  field y
+
+  verse reach, reach x
+  verse reach, reach y
+  verse write block
+    m
+
+verse shift point
+  field x
+  field y
+
+  verse reach, reach x
+  verse reach, reach y
+  verse write block
+    l
+
+verse shift curve
+  field curve point cross 1
+  field curve point climb 1
+  field curve point cross 2
+  field curve point climb 2
+  field x
+  field y
+
+  verse reach, reach curve point cross 1
+  verse reach, reach curve point climb 1
+  verse reach, reach curve point cross 2
+  verse reach, reach curve point climb 2
+  verse reach, reach x
+  verse reach, reach y
+  verse write block
+    c
+
+verse shift curve
+  field curve point cross
+  field curve point climb
+  field x
+  field y
+
+  verse reach, reach curve point cross
+  verse reach, reach curve point climb
+  verse reach, reach x
+  verse reach, reach y
+  verse write block
+    v
+
+verse place plane
+  field x
+  field y
+  field w
+  field h
+
+  verse reach, reach x
+  verse reach, reach y
+  verse reach, reach w
+  verse reach, reach h
+  verse write block
+    re
+
+verse place round plane
+
+
+https://github.com/mozilla/pdf.js/blob/master/src/core/parser.js
+
+
+verse place ridge paint
+  field paint
+  verse point, class place ridge paint space
+    merge space, reach if color.length is 4 then 'DeviceCMYK' else 'DeviceRGB'
+  verse write [reach paint.join ' '] SCN
+
+verse place paint
+  field paint
+  verse point, class place ridge paint space
+    merge space, reach if color.length is 4 then 'DeviceCMYK' else 'DeviceRGB'
+  verse write [reach paint.join ' '] scn
+
+verse place ridge paint space
+  field space
+  verse write /[reach space] CS
+
+verse place paint space
+  field space
+  verse write /[reach space] cs
+
+  fillColor: (color, opacity) ->
+    set = @_setColor color, no
+    @fillOpacity opacity if set
+
+    # save this for text wrapper, which needs to reset
+    # the fill color on new pages
+    @_fillColor = [color, opacity]
+    return this
+
+verse cloud
+  (fillOpacity, strokeOpacity) ->
+   return unless fillOpacity? or strokeOpacity?
+
+   fillOpacity = Math.max 0, Math.min 1, fillOpacity    if fillOpacity?
+   strokeOpacity = Math.max 0, Math.min 1, strokeOpacity  if strokeOpacity?
+   key = "#{fillOpacity}_#{strokeOpacity}"
+
+   if @_opacityRegistry[key]
+     [dictionary, name] = @_opacityRegistry[key]
+   else
+     dictionary =
+       Type: 'ExtGState'
+
+     dictionary.ca = fillOpacity if fillOpacity?
+     dictionary.CA = strokeOpacity if strokeOpacity?
+
+     dictionary = @ref dictionary
+     dictionary.end()
+     id = ++@_opacityCount
+     name = "Gs#{id}"
+     @_opacityRegistry[key] = [dictionary, name]
+
+   @page.ext_gstates[name] = dictionary
+   @addContent "/#{name} gs"
+verse clear curve
+  verse write, h
+
+verse ridge cross
+  field cross
+
+  verse write [reach cross] w
+
+verse undash
+  verse write \[\] 0 d
+
+verse shift point
+  field x
+  field y
+
+  verse write [reach x] [reach y] m
+
+verse lineTo(x, y) ->
+  field x
+  field y
+
+  verse write [reach x] [reach y] l
+
+verse bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y) ->
+  field x
+  field y
+
+  verse write [reach cp1x] [reach cp1y] [reach cp2x] [reach cp2y] [reach x] [reach y] c
+
+verse quadraticCurveTo(cpx, cpy, x, y) ->
+  verse write [reach cpx] [reach cpy] [reach x] [reach y] v
+
+verse rect(x, y, w, h) ->
+  verse write [reach x] [reach y] [reach w] [reach h] re
+
+verse roundedRect: (x, y, w, h, r = 0) ->
+    r = Math.min(r, 0.5 * w, 0.5 * h)
+
+    # amount to inset control points from corners (see `ellipse`)
+    c = r * (1.0 - KAPPA)
+    verse point, class moveTo x + r, y
+    verse point, class lineTo x + w - r, y
+    verse point, class bezierCurveTo x + w - c, y, x + w, y + c, x + w, y + r
+    verse point, class lineTo x + w, y + h - r
+    verse point, class bezierCurveTo x + w, y + h - c, x + w - c, y + h, x + w - r, y + h
+    verse point, class lineTo x + r, y + h
+    verse point, class bezierCurveTo x + c, y + h, x, y + h - c, x, y + h - r
+    verse point, class lineTo x, y + r
+    verse point, class bezierCurveTo x, y + c, x + c, y, x + r, y
+    verse point, class closePath()
+
+ellipse: (x, y, r1, r2 = r1) ->
+    # based on http://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas/2173084#2173084
+    x -= r1
+    y -= r2
+    ox = r1 * KAPPA
+    oy = r2 * KAPPA
+    xe = x + r1 * 2
+    ye = y + r2 * 2
+    xm = x + r1
+    ym = y + r2
+
+    verse point, class moveTo(x, ym)
+    verse point, class bezierCurveTo(x, ym - oy, xm - ox, y, xm, y)
+    verse point, class bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym)
+    verse point, class bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye)
+    verse point, class bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym)
+    verse point, class closePath()
+
+  circle: (x, y, radius) ->
+    @ellipse x, y, radius
+
+polygon: (points...) ->
+    @moveTo points.shift()...
+    @lineTo point... for point in points
+    @closePath()
+
+path: (path) ->
+    SVGPath.apply this, path
+    return this
+
+verse fill: (color, rule) ->
+  @fillColor color if color
+  verse write f
+
+verse ridge: (color) ->
+  @strokeColor color if color
+  verse write S
+
+verse clip: (rule) ->
+  verse write W
+
+verse transform: (m11, m12, m21, m22, dx, dy) ->
+  # keep track of the current transformation matrix
+  m = @_ctm
+  [m0, m1, m2, m3, m4, m5] = m
+  m[0] = m0 * m11 + m2 * m12
+  m[1] = m1 * m11 + m3 * m12
+  m[2] = m0 * m21 + m2 * m22
+  m[3] = m1 * m21 + m3 * m22
+  m[4] = m0 * dx + m2 * dy + m4
+  m[5] = m1 * dx + m3 * dy + m5
+
+  verse write [m11] [m12] [m21] [m22] [dx] [dy] cm
+
+  translate: (x, y) ->
+    verse point, class transform 1, 0, 0, 1, x, y
+
+  rotate: (angle, options = {}) ->
+    rad = angle * Math.PI / 180
+    cos = Math.cos(rad)
+    sin = Math.sin(rad)
+    x = y = 0
+
+    if options.origin?
+      [x, y] = options.origin
+      x1 = x * cos - y * sin
+      y1 = x * sin + y * cos
+      x -= x1
+      y -= y1
+
+    @transform cos, sin, -sin, cos, x, y
+
+  scale: (xFactor, yFactor = xFactor, options = {}) ->
+    if typeof yFactor is "object"
+      options = yFactor
+      yFactor = xFactor
+
+    x = y = 0
+    if options.origin?
+      [x, y] = options.origin
+      x -= xFactor * x
+      y -= yFactor * y
+
+    @transform xFactor, 0, 0, yFactor, x, y
+  arc: (x, y, radius, startAngle, endAngle, anticlockwise = false) ->
+    TWO_PI = 2.0 * Math.PI
+    HALF_PI = 0.5 * Math.PI
+
+    deltaAng = endAngle - startAngle
+
+    if Math.abs(deltaAng) > TWO_PI
+      # draw only full circle if more than that is specified
+      deltaAng = TWO_PI
+
+    else if (deltaAng isnt 0 && anticlockwise isnt (deltaAng < 0))
+      # necessary to flip direction of rendering
+      dir = if anticlockwise then -1 else 1
+      deltaAng = dir * TWO_PI + deltaAng
+
+    numSegs = Math.ceil(Math.abs(deltaAng) / HALF_PI)
+    segAng = deltaAng / numSegs
+    handleLen = (segAng / HALF_PI) * KAPPA * radius
+    curAng = startAngle
+
+    # component distances between anchor point and control point
+    deltaCx = -Math.sin(curAng) * handleLen
+    deltaCy = Math.cos(curAng) * handleLen
+
+    # anchor point
+    ax = x + Math.cos(curAng) * radius
+    ay = y + Math.sin(curAng) * radius
+
+    # calculate and render segments
+    @moveTo ax, ay
+
+    for segIdx in [0...numSegs]
+      # starting control point
+      cp1x = ax + deltaCx
+      cp1y = ay + deltaCy
+
+      # step angle
+      curAng += segAng
+
+      # next anchor point
+      ax = x + Math.cos(curAng) * radius
+      ay = y + Math.sin(curAng) * radius
+
+      # next control point delta
+      deltaCx = -Math.sin(curAng) * handleLen
+      deltaCy = Math.cos(curAng) * handleLen
+
+      # ending control point
+      cp2x = ax - deltaCx
+      cp2y = ay - deltaCy
+
+      # render segment
+      @bezierCurveTo cp1x, cp1y, cp2x, cp2y, ax, ay
+
+    return this
+
+
+cause guide quirk
+  field sheet
+  field guide
+  field stage
+  field point
+
+  wheel reach sheet, quirk
+    if guide verse quirk
+
+verse end
+  field offset
+  field offset list
+    xRefOffset = @_offset
+  verse slice, |xref|
+  verse slice, |0 #{@_offsets.length + 1}|
+  verse slice, |0000000000 65535 f |
+
+    for offset in @_offsets
+      offset = ('0000000000' + offset).slice(-10)
+    verse slice, offset + ' 00000 n '
+
+  verse slice, |trailer|
+  verse slice, |<<|
+  verse slice, |\n|
+  for key, val of object
+    out.push |/| + key + | | + PDFObject.convert(val)
+
+  verse slice, |>>|
+  verse slice, |\n|
+    <<
+    /Size 14
+    /Root 3 0 R
+    /Info 10 0 R
+    /ID [<f7f53fc268a2dd9c1808004d466f83b3> <f7f53fc268a2dd9c1808004d466f83b3>]
+    >>
+
+  verse slice, |startxref|
+  verse slice, |#{xRefOffset}|
+  verse slice, |%%EOF|
+
+verse reference end
+  field chunk
+  verse slice, |#{@id} #{@gen} obj|
+  verse slice, PDFObject.convert(@data)
+  verse check, reach chunk, scale
+    verse slice, |stream|
+    verse wheel, reach chunk
+      verse slice, reach block
+    verse slice, |\nendstream|
+  verse slice, |endobj|
+  verse slice,(this)
+
+verse stringify reference
+  "#{@id} #{@gen} R"
+
+verse color space fill
+  field space
+  verse write "/#{space} cs"
+
+verse color space stroke
+  field space
+  verse write "/#{space} CS"
+
+verse color fill
+  verse write "#{color} scn"
+
+verse color stroke
+  verse write "#{color} SCN"
+
+verse image
+  field label
+  verse slice |/:label Do|
+
+_normalizeColor: (color) ->
+    if color instanceof PDFGradient
+      return color
+
+    if typeof color is 'string'
+      if color.charAt(0) is '#'
+        color = color.replace(/#([0-9A-F])([0-9A-F])([0-9A-F])/i, "#$1$1$2$2$3$3") if color.length is 4
+        hex = parseInt(color.slice(1), 16)
+        color = [hex >> 16, hex >> 8 & 0xff, hex & 0xff]
+
+      else if namedColors[color]
+        color = namedColors[color]
+
+    if Array.isArray color
+      # RGB
+      if color.length is 3
+        color = (part / 255 for part in color)
+
+      # CMYK
+      else if color.length is 4
+        color = (part / 100 for part in color)
+
+      return color
+
+    return null
+
+verse name tree
+  <<
+    /Names [
+  ]
+  >>
+
+verse convert data
+  wheel
+    check number
+      verse convert number
+    check string
+      verse convert string
+    check array
+      verse convert array
+    check object
+      verse convert object
+
+verse convert number
+  /:brand :state
+
+verse convert string
+  /:brand /:state
+
+verse convert array
+  verse slice, |/:brand [|
+  wheel block
+    verse convert data
+      hitch data, reach block
+  verse slice, |]|
+
+verse convert object
+  <<
+  wheel reach object
+    verse slice, |/:brand |
+    verse convert data
+      hitch data, reach fruit
+  >>
+
+verse whitespace
+
+verse NUL
+  verse slice, 0
+
+verse HT
+  verse slice, 9
+
+verse LF
+  verse slice, 10
+
+verse FF
+  verse slice, 12
+
+verse CR
+  verse slice, 13
+
+verse SP
+  verse slice, 32
+
+verse comment
+  verse slice, |% |
+  verse slice, reach text
+
+verse signed integer
+  verse slice, |+:integer|
+
+verse literal string
+  (:text)
+
+verse hex string
+  <:text>
+
+verse delimiters
+( 40 28 50 LEFT PARENTHESIS
+) 41 29 51 RIGHT PARENTHESIS
+< 60 3C 60 LESS-THAN SIGN
+> 62 3E 62 GREATER-THAN SIGN
+[ 91 5B 133 LEFT SQUARE BRACKET
+] 93 5D 135 RIGHT SQUARE BRACKET
+{ 123 7B 173 LEFT CURLY BRACKET
+} 125 7D 175 RIGHT CURLY BRACKET
+/ 47 2F 57 SOLIDUS
+% 37 25 45 PERCENT SIGN
+
+escape sequences in strings
+\n LINE FEED (0Ah) (LF)
+\r CARRIAGE RETURN (0Dh) (CR)
+\t HORIZONTAL TAB (09h) (HT)
+\b BACKSPACE (08h) (BS)
+\f FORM FEED (FF)
+\( LEFT PARENTHESIS (28h)
+\) RIGHT PARENTHESIS (29h)
+\\ REVERSE SOLIDUS (5Ch) (Backslash)
+\ddd Character code ddd (octal)
+
+verse name
+  /:name
+
+verse array
+  [
+  verse bound, | |
+    verse slice, reach block
+  ]
+
+verse dictionary
+  <<:content>>
+
+verse stream
+  verse class, class dictionary
+    hitch Length, reach length
+  verse slice, |\n|
+  verse slice, |stream|
+  verse slice, |\n|
+  :byte
+  verse slice, |endstream|
+  verse slice, |\n|
+
+verse indirect object
+  verse slice, |:number 0 obj|
+  verse slice, |  :value|
+  verse slice, |endobj|
+
+verse indirect reference
+  verse slice, |:number 0 R|
+
+verse filter
+  /Filter [/ASCII85Decode /LZWDecode]
+
+verse document
+  verse header
+  verse body
+  verse reference table
+  verse trailer
+
+verse reference table
+  xref
+  nnnnnnnnnn ggggg n eol
+  nnnnnnnnnn ggggg f eol
+
+verse trailer
+  verse slice, |\n\n%\n|
+  verse slice, |% trailer|
+  verse slice, |\n%\n\n|
+  verse slice, |trailer <<|
+  verse slice, |\n|
+  verse slice, |  /Size |
+  verse slice, reach size
+  verse slice, |\n|
+  verse slice, |  /Root |
+  verse class, class indirect object
+    hitch object, reach root
+  verse slice, |\n|
+  verse slice, |  /Encrypt |
+  verse class, class indirect object
+    hitch object, reach encrypt
+  verse slice, |\n|
+  verse slice, |  /ID [|
+  verse slice, |\n|
+  verse chain
+    verse hex string
+  verse slice, |\n|
+  verse slice, |]|
+  verse slice, |>>|
+  verse slice, |\n|
+  verse slice, |startxref|
+  Byte_offset_of_last_cross-reference_section
+  verse slice, |%%EOF|
+
+verse object stream
+  /Type ObjStm
+  /N
+  /First
+
+verse catalog
+  1 0 obj <<
+    /Type /Catalog
+    /Pages 2 0 R
+    /PageMode /UseOutlines
+    /Outlines 3 0 R
+  >>
+  endobj
+
+verse page list
+  2 0 obj <<
+    /Type /Pages
+    /Kids [
+      4 0 R
+      10 0 R
+      24 0 R
+    ]
+    /Count 3
+  >>
+  endobj
+
+verse page
+  4 0 obj <<
+    /Type /Page
+    /Parent 4 0 R
+    /MediaBox [0 0 612 792]
+    /Resources <<
+      /Font <<
+        /F3 7 0 R
+        /F5 9 0 R
+        /F7 11 0 R
+      >>
+      /ProcSet [/PDF]
+    >>
+    /Contents 12 0 R
+    /Thumb 14 0 R
+    /Annots [
+      23 0 R
+      24 0 R
+    ]
+  >>
+  endobj
+
+verse date
+  (D:YYYYMMDDHHmmSSOHH'mm )
+
+state Interactive Form Dictionary
+  field Fields, class array, required true
+  NeedAppearances boolean
+  SigFlags integer
+  CO array
+  DR dictionary

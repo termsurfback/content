@@ -1,0 +1,12 @@
+
+field source
+  front term, chain term
+
+field term
+  front name, field string
+  front children, field chain
+
+field template
+  front children, field chain
+    crown string
+    crown term

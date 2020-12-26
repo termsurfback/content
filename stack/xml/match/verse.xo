@@ -1,0 +1,235 @@
+
+trace document
+  trace class, class prolog
+  trace class, class element
+  trace chain, class Misc
+
+names     ::=  name (20u name)*
+
+trace name
+  trace crown
+    trace class, class letter
+    trace shard, |_|
+    trace shard, |:|
+  trace chain, class name character
+
+trace character
+  trace crown
+    9u | Au | Du | [20u-D7FFu] | [E000u-FFFDu] | [10000u-10FFFFu]
+
+trace space
+  trace floor, 1
+    trace crown
+      20u | 9u | Du | Au
+
+trace name character
+  trace crown
+    trace class, class letter
+    trace class, class Digit
+    trace shard, |.|
+    trace shard, |-|
+    trace shard, |_|
+    trace shard, |:|
+    trace class, class Combiningcharacter
+    trace class, class Extender
+
+trace Nmtoken
+  trace floor, 1
+    trace class, class name character
+
+Nmtokens  ::=  Nmtoken (20u Nmtoken)*
+
+trace EntityValue
+  trace crown
+    trace chunk
+      trace shard, |"|
+      trace chain
+        trace crown
+          trace sieve
+            trace shard, |^%&"|
+          trace class, class PEReference
+          trace class, class Reference
+      trace shard, |"|
+    "'" ([^%&'] | PEReference | Reference)* "'"
+
+AttValue       ::=  '"' ([^<&"] | Reference)* '"'
+                 |  "'" ([^<&'] | Reference)* "'"
+SystemLiteral  ::=  ('"' [^"]* '"') | ("'" [^']* "'")
+PubidLiteral   ::=  '"' Pubidcharacter* '"' | "'" (Pubidcharacter - "'")* "'"
+Pubidcharacter      ::=  20u | Du | Au | [a-zA-Z0-9]
+                 |  [-'()+,./:=?;!*#@$_%]
+characterData  ::=  [^<&]* - ([^<&]* ']]>' [^<&]*)
+
+Comment  ::=  '<!--' ((character - '-') | ('-' (character - '-')))* '-->'
+PI        ::=  '<?' PITarget (S (character* - (character* '?>' character*)))? '?>'
+PITarget  ::=  name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
+CDSect   ::=  CDStart CData CDEnd
+CDStart  ::=  '<![CDATA['
+CData    ::=  (character* - (character* ']]>' character*))
+CDEnd    ::=  ']]>'
+prolog       ::=  XMLDecl? Misc* (doctypedecl Misc*)?
+XMLDecl      ::=  '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>'
+VersionInfo  ::=  S 'version' Eq ("'" VersionNum "'" | '"' VersionNum '"')
+Eq           ::=  S? '=' S?
+VersionNum   ::=  '1.0'
+Misc         ::=  Comment | PI | S
+doctypedecl    ::=  '<!DOCTYPE' S name (S ExternalID)? S? ('[' intSubset ']' S?)? '>'
+DeclSep        ::=  PEReference | S
+intSubset      ::=  (markupdecl | DeclSep)*
+markupdecl     ::=  elementdecl | AttlistDecl | EntityDecl | NotationDecl
+                 |  PI | Comment
+extSubset      ::=  TextDecl? extSubsetDecl
+extSubsetDecl  ::=  ( markupdecl | conditionalSect | DeclSep)*
+SDDecl  ::=  S 'standalone' Eq
+             (("'" ('yes' | 'no') "'") | ('"' ('yes' | 'no') '"'))
+
+element       ::=  EmptyElemTag  | STag content ETag
+STag          ::=  '<' name (S Attribute)* S? '>'
+Attribute     ::=  name Eq AttValue
+ETag          ::=  '</' name S? '>'
+content       ::=  characterData?
+                   ((element | Reference | CDSect | PI | Comment) characterData?)*
+EmptyElemTag  ::=  '<' name (S Attribute)* S? '/>'
+
+elementdecl  ::=  '<!ELEMENT' S name S contentspec S? '>'
+contentspec  ::=  'EMPTY' | 'ANY' | Mixed | children
+children     ::=  (choice | seq) ('?' | '*' | '+')?
+cp           ::=  (name | choice | seq) ('?' | '*' | '+')?
+choice       ::=  '(' S? cp ( S? '|' S? cp )+ S? ')'
+seq          ::=  '(' S? cp ( S? ',' S? cp )* S? ')'
+Mixed        ::=  '(' S? '#PCDATA' (S? '|' S? name)* S? ')*'
+               |  '(' S? '#PCDATA' S? ')'
+
+AttlistDecl       ::=  '<!ATTLIST' S name AttDef* S? '>'
+AttDef            ::=  S name S AttType S DefaultDecl
+AttType           ::=  StringType | TokenizedType | EnumeratedType
+StringType        ::=  'CDATA'
+TokenizedType     ::=  'ID' | 'IDREF' | 'IDREFS' | 'ENTITY'
+                    |  'ENTITIES' | 'NMTOKEN' | 'NMTOKENS'
+EnumeratedType    ::=  NotationType | Enumeration
+NotationType      ::=  'NOTATION' S '(' S? name (S? '|' S? name)* S? ')'
+Enumeration       ::=  '(' S? Nmtoken (S? '|' S? Nmtoken)* S? ')'
+DefaultDecl       ::=  '#REQUIRED' | '#IMPLIED' | (('#FIXED' S)? AttValue)
+
+conditionalSect     ::=  includeSect | ignoreSect
+includeSect         ::=  '<![' S? 'INCLUDE' S? '[' extSubsetDecl ']]>'
+ignoreSect          ::=  '<![' S? 'IGNORE' S? '[' ignoreSectContents* ']]>'
+ignoreSectContents  ::= Ignore ('<![' ignoreSectContents ']]>' Ignore)*
+Ignore              ::=  character* - (character* ('<![' | ']]>') character*)
+
+characterRef      ::=  '&#' [0-9]+ ';' | '&#x' [0-9a-fA-F]+ ';'
+Reference    ::=  EntityRef | characterRef
+EntityRef    ::=  '&' name ';'
+PEReference  ::=  '%' name ';'
+
+EntityDecl        ::=  GEDecl | PEDecl
+GEDecl            ::=  '<!ENTITY' S name S EntityDef S? '>'
+PEDecl            ::=  '<!ENTITY' S '%' S name S PEDef S? '>'
+EntityDef         ::=  EntityValue | (ExternalID NDataDecl?)
+PEDef             ::=  EntityValue | ExternalID
+ExternalID        ::=  'SYSTEM' S SystemLiteral
+                    |  'PUBLIC' S PubidLiteral S SystemLiteral
+NDataDecl         ::=  S 'NDATA' S name
+
+TextDecl      ::=  '<?xml' VersionInfo? EncodingDecl S? '?>'
+extParsedEnt  ::=  TextDecl? content
+EncodingDecl  ::=  S 'encoding' Eq ('"' Encname '"' | "'" Encname "'" )
+Encname       ::=  [A-Za-z] ([A-Za-z0-9._] | '-')*
+NotationDecl  ::=  '<!NOTATION' S name S (ExternalID | PublicID) S? '>'
+PublicID      ::=  'PUBLIC' S PubidLiteral
+
+letter
+  trace class, class Basecharacter
+  trace class, class Ideographic
+
+Basecharacter       ::=  [41u-5Au] | [61u-7Au] | [C0u-D6u]
+                 |  [D8u-F6u] | [F8u-FFu] | [100u-131u]
+                 |  [134u-13Eu] | [141u-148u] | [14Au-17Eu]
+                 |  [180u-1C3u] | [1CDu-1F0u] | [1F4u-1F5u]
+                 |  [1FAu-217u] | [250u-2A8u] | [2BBu-2C1u]
+                 |  386u | [388u-38Au] | 38Cu | [38Eu-3A1u]
+                 |  [3A3u-3CEu] | [3D0u-3D6u] | 3DAu | 3DCu
+                 |  3DEu | 3E0u | [3E2u-3F3u] | [401u-40Cu]
+                 |  [40Eu-44Fu] | [451u-45Cu] | [45Eu-481u]
+                 |  [490u-4C4u] | [4C7u-4C8u] | [4CBu-4CCu]
+                 |  [4D0u-4EBu] | [4EEu-4F5u] | [4F8u-4F9u]
+                 |  [531u-556u] | 559u | [561u-586u]
+                 |  [5D0u-5EAu] | [5F0u-5F2u] | [621u-63Au]
+                 |  [641u-64Au] | [671u-6B7u] | [6BAu-6BEu]
+                 |  [6C0u-6CEu] | [6D0u-6D3u] | 6D5u | [6E5u-6E6u]
+                 |  [905u-939u] | 93Du | [958u-961u] | [985u-98Cu]
+                 |  [98Fu-990u] | [993u-9A8u] | [9AAu-9B0u]
+                 |  9B2u | [9B6u-9B9u] | [9DCu-9DDu] | [9DFu-9E1u]
+                 |  [9F0u-9F1u] | [A05u-A0Au] | [A0Fu-A10u]
+                 |  [A13u-A28u] | [A2Au-A30u] | [A32u-A33u]
+                 |  [A35u-A36u] | [A38u-A39u] | [A59u-A5Cu]
+                 |  A5Eu | [A72u-A74u] | [A85u-A8Bu] | A8Du
+                 |  [A8Fu-A91u] | [A93u-AA8u] | [AAAu-AB0u]
+                 |  [AB2u-AB3u] | [AB5u-AB9u] | ABDu | AE0u
+                 |  [B05u-B0Cu] | [B0Fu-B10u] | [B13u-B28u]
+                 |  [B2Au-B30u] | [B32u-B33u] | [B36u-B39u]
+                 |  B3Du | [B5Cu-B5Du] | [B5Fu-B61u]
+                 |  [B85u-B8Au] | [B8Eu-B90u] | [B92u-B95u]
+                 |  [B99u-B9Au] | B9Cu | [B9Eu-B9Fu]
+                 |  [BA3u-BA4u] | [BA8u-BAAu] | [BAEu-BB5u]
+                 |  [BB7u-BB9u] | [C05u-C0Cu] | [C0Eu-C10u]
+                 |  [C12u-C28u] | [C2Au-C33u] | [C35u-C39u]
+                 |  [C60u-C61u] | [C85u-C8Cu] | [C8Eu-C90u]
+                 |  [C92u-CA8u] | [CAAu-CB3u] | [CB5u-CB9u]
+                 |  CDEu | [CE0u-CE1u] | [D05u-D0Cu] | [D0Eu-D10u]
+                 |  [D12u-D28u] | [D2Au-D39u] | [D60u-D61u]
+                 |  [E01u-E2Eu] | E30u | [E32u-E33u] | [E40u-E45u]
+                 |  [E81u-E82u] | E84u | [E87u-E88u] | E8Au
+                 |  E8Du | [E94u-E97u] | [E99u-E9Fu] | [EA1u-EA3u]
+                 |  EA5u | EA7u | [EAAu-EABu] | [EADu-EAEu] | EB0u
+                 |  [EB2u-EB3u] | EBDu | [EC0u-EC4u] | [F40u-F47u]
+                 |  [F49u-F69u] | [10A0u-10C5u] | [10D0u-10F6u] | 1100u
+                 |  [1102u-1103u] | [1105u-1107u] | 1109u | [110Bu-110Cu]
+                 |  [110Eu-1112u] | 113Cu | 113Eu | 1140u | 114Cu | 114Eu
+                 |  1150u | [1154u-1155u] | 1159u | [115Fu-1161u] | 1163u
+                 |  1165u | 1167u | 1169u | [116Du-116Eu] | [1172u-1173u]
+                 |  1175u | 119Eu | 11A8u | 11ABu | [11AEu-11AFu]
+                 |  [11B7u-11B8u] | 11BAu | [11BCu-11C2u] | 11EBu | 11F0u
+                 |  11F9u | [1E00u-1E9Bu] | [1EA0u-1EF9u] | [1F00u-1F15u]
+                 |  [1F18u-1F1Du] | [1F20u-1F45u] | [1F48u-1F4Du]
+                 |  [1F50u-1F57u] | 1F59u | 1F5Bu | 1F5Du | [1F5Fu-1F7Du]
+                 |  [1F80u-1FB4u] | [1FB6u-1FBCu] | 1FBEu | [1FC2u-1FC4u]
+                 |  [1FC6u-1FCCu] | [1FD0u-1FD3u] | [1FD6u-1FDBu]
+                 |  [1FE0u-1FECu] | [1FF2u-1FF4u] | [1FF6u-1FFCu] | 2126u
+                 |  [212Au-212Bu] | 212Eu | [2180u-2182u] | [3041u-3094u]
+                 |  [30A1u-30FAu] | [3105u-312Cu] | [AC00u-D7A3u]
+Ideographic    ::=  [4E00u-9FA5u] | 3007u | [3021u-3029u]
+Combiningcharacter  ::=  [300u-345u] | [360u-361u] | [483u-486u]
+                 |  [591u-5A1u] | [5A3u-5B9u] | [5BBu-5BDu] | 5BFu
+                 |  [5C1u-5C2u] | 5C4u | [64Bu-652u] | 670u
+                 |  [6D6u-6DCu] | [6DDu-6DFu] | [6E0u-6E4u]
+                 |  [6E7u-6E8u] | [6EAu-6EDu] | [901u-903u]
+                 |  93Cu | [93Eu-94Cu] | 94Du | [951u-954u]
+                 |  [962u-963u] | [981u-983u] | 9BCu | 9BEu
+                 |  9BFu | [9C0u-9C4u] | [9C7u-9C8u] | [9CBu-9CDu]
+                 |  9D7u | [9E2u-9E3u] | A02u | A3Cu | A3Eu | A3Fu
+                 |  [A40u-A42u] | [A47u-A48u] | [A4Bu-A4Du]
+                 |  [A70u-A71u] | [A81u-A83u] | ABCu | [ABEu-AC5u]
+                 |  [AC7u-AC9u] | [ACBu-ACDu] | [B01u-B03u] | B3Cu
+                 |  [B3Eu-B43u] | [B47u-B48u] | [B4Bu-B4Du]
+                 |  [B56u-B57u] | [B82u-B83u] | [BBEu-BC2u]
+                 |  [BC6u-BC8u] | [BCAu-BCDu] | BD7u | [C01u-C03u]
+                 |  [C3Eu-C44u] | [C46u-C48u] | [C4Au-C4Du]
+                 |  [C55u-C56u] | [C82u-C83u] | [CBEu-CC4u]
+                 |  [CC6u-CC8u] | [CCAu-CCDu] | [CD5u-CD6u]
+                 |  [D02u-D03u] | [D3Eu-D43u] | [D46u-D48u]
+                 |  [D4Au-D4Du] | D57u | E31u | [E34u-E3Au]
+                 |  [E47u-E4Eu] | EB1u | [EB4u-EB9u] | [EBBu-EBCu]
+                 |  [EC8u-ECDu] | [F18u-F19u] | F35u | F37u | F39u
+                 |  F3Eu | F3Fu | [F71u-F84u] | [F86u-F8Bu]
+                 |  [F90u-F95u] | F97u | [F99u-FADu] | [FB1u-FB7u]
+                 |  FB9u | [20D0u-20DCu] | 20E1u | [302Au-302Fu]
+                 |  3099u | 309Au
+Digit          ::=  [30u-39u] | [660u-669u] | [6F0u-6F9u]
+                 |  [966u-96Fu] | [9E6u-9EFu] | [A66u-A6Fu]
+                 |  [AE6u-AEFu] | [B66u-B6Fu] | [BE7u-BEFu]
+                 |  [C66u-C6Fu] | [CE6u-CEFu] | [D66u-D6Fu]
+                 |  [E50u-E59u] | [ED0u-ED9u] | [F20u-F29u]
+Extender       ::=  B7u | 2D0u | 2D1u | 387u | 640u | E46u
+                 |  EC6u | 3005u | [3031u-3035u] | [309Du-309Eu]
+                 |  [30FCu-30FEu]

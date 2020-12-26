@@ -1,0 +1,244 @@
+
+http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
+
+http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html
+
+write ansi
+  mount sheet, class sheet
+
+  write chunk, |\x1b[|
+  write class, class sheet, share sheet
+  write chunk, m
+
+prime clear, 0
+prime force, 1
+prime faint, 2
+prime standout, 3
+prime ridge, 4
+prime blink, 5
+prime swing, 7
+prime hidden, 8
+
+## Font attributes ##
+# off
+off = '\x1b[0m' # off
+default = '\x1b[39m' # default foreground
+DEFAULT = '\x1b[49m' # default background
+#
+bd = '\x1b[1m' # bold
+ft = '\x1b[2m' # faint
+st = '\x1b[3m' # standout
+ul = '\x1b[4m' # underlined
+bk = '\x1b[5m' # blink
+rv = '\x1b[7m' # reverse
+hd = '\x1b[8m' # hidden
+nost = '\x1b[23m' # no standout
+noul = '\x1b[24m' # no underlined
+nobk = '\x1b[25m' # no blink
+norv = '\x1b[27m' # no reverse
+# colors
+prime black, 30
+prime BLACK, 40
+prime red, 31
+prime RED, 41
+prime green, 32
+prime GREEN, 42
+prime yellow, 33
+prime YELLOW, 43
+prime blue, 34
+prime BLUE, 44
+prime magenta, 35
+prime MAGENTA, 45
+prime cyan, 36
+prime CYAN, 46
+prime white, 37
+prime WHITE, 47
+# light colors
+prime dgray, 90
+prime DGRAY, 100
+prime lred, 91
+prime LRED, 101
+prime lgreen, 92
+prime LGREEN, 102
+prime lyellow, 93
+prime LYELLOW, 103
+prime lblue, 94
+prime LBLUE, 104
+prime lmagenta, 95
+prime LMAGENTA, 105
+prime lcyan, 96
+prime LCYAN, 106
+prime lgray, 97
+prime LGRAY, 107
+
+Black: \u001b[30m
+Red: \u001b[31m
+Green: \u001b[32m
+Yellow: \u001b[33m
+Blue: \u001b[34m
+Magenta: \u001b[35m
+Cyan: \u001b[36m
+White: \u001b[37m
+Reset: \u001b[0m
+
+Bright Black: \u001b[30;1m
+Bright Red: \u001b[31;1m
+Bright Green: \u001b[32;1m
+Bright Yellow: \u001b[33;1m
+Bright Blue: \u001b[34;1m
+Bright Magenta: \u001b[35;1m
+Bright Cyan: \u001b[36;1m
+Bright White: \u001b[37;1m
+Reset: \u001b[0m
+
+Background Black: \u001b[40m
+Background Red: \u001b[41m
+Background Green: \u001b[42m
+Background Yellow: \u001b[43m
+Background Blue: \u001b[44m
+Background Magenta: \u001b[45m
+Background Cyan: \u001b[46m
+Background White: \u001b[47m
+
+Background Bright Black: \u001b[40;1m
+Background Bright Red: \u001b[41;1m
+Background Bright Green: \u001b[42;1m
+Background Bright Yellow: \u001b[43;1m
+Background Bright Blue: \u001b[44;1m
+Background Bright Magenta: \u001b[45;1m
+Background Bright Cyan: \u001b[46;1m
+Background Bright White: \u001b[47;1m
+
+Bold: \u001b[1m
+Underline: \u001b[4m
+Reversed: \u001b[7m
+
+place count
+  mount climb count
+  mount cross count
+
+  write chunk, \x1b[
+  write chunk, share climb count
+  write chunk, ;
+  write chunk, share cross count
+  write chunk, H
+
+write move mouse crest
+  mount count, field count
+    floor 0
+  write chunk, \x1b[
+  write chunk, share count
+  write chunk, A
+
+write move mouse floor
+  mount count, field count
+    floor 0
+  write chunk, \x1b[
+  write chunk, share count
+  write chunk, B
+
+write move mouse front
+  mount count, field count
+    floor 0
+  write chunk, \x1b[
+  write chunk, share count
+  write chunk, C
+
+write move mouse start
+  mount count, field count
+    floor 0
+  write chunk, \x1b[
+  write chunk, share count
+  write chunk, D
+
+write move mouse floor start
+  mount count, field count
+    floor 0
+  write chunk, \x1b[
+  write chunk, share count
+  write chunk, E
+
+write move mouse crest start
+  mount count, field count
+    floor 0
+  write chunk, |\x1b[|
+  write chunk, share count
+  write chunk, F
+
+write move mouse cross
+  mount count, field count
+    floor 0
+  write chunk, \x1b[
+  write chunk, share count
+  write chunk, G
+
+write count
+  mount cross, field count
+    floor 0
+  mount climb, field count
+    floor 0
+  write chunk, \x1b[
+  write chunk, share climb
+  write chunk, ;
+  write chunk, share cross
+  write chunk, G
+
+write clear screen
+  write chunk, \x1b[2J
+
+write clear screen floor
+  write chunk, \x1b[0J
+
+write clear screen crest
+  write chunk, \x1b[1J
+
+write clear line end
+  write chunk, \x1b[0K
+
+write clear line start
+  write chunk, \x1b[1K
+
+write clear line
+  write chunk, \x1b[2K
+
+store count
+  \x1b[s
+
+yield count
+  \x1b[u
+
+write sheet paint 256
+  mount count, field count
+    floor 0
+    crest 255
+  write chunk, \x1b[48;5;
+  write chunk, share count
+  write chunk, m
+
+write print paint 256
+  mount count, field count
+    floor 0
+    crest 255
+  write chunk, \x1b[38;5;
+  write chunk, share count
+  write chunk, m
+
+write sheet paint
+  mount paint, class paint shade
+  write chunk, \x1b[48;2;
+  write chunk, share paint, rouge
+  write chunk, ;
+  write chunk, share paint, green
+  write chunk, ;
+  write chunk, share paint, steel
+  write chunk, m
+
+write paint
+  mount paint, class paint shade
+  write chunk, \x1b[38;2;
+  write chunk, share paint, rouge
+  write chunk, ;
+  write chunk, share paint, green
+  write chunk, ;
+  write chunk, share paint, steel
+  write chunk, m
