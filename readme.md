@@ -7,9 +7,9 @@
 <br/>
 <br/>
 
-<h3 align='center'>content-grammar</h3>
+<h3 align='center'>content</h3>
 <p align='center'>
-  Grammars for parsing arbitrary strings, binaries, or other content in XO
+  Grammars for parsing and generating arbitrary strings, binaries, or other content in XO
 </p>
 
 <p align='center'>
