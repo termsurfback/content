@@ -58,9 +58,7 @@ match name
 
 match prefix-word
   match class, class lowercase-ascii-letter
-  match sieve
-    match chain
-      match class, class word-symbol
+  match chain, match class, class word-symbol
 
 match suffix-word
   match chain
@@ -101,9 +99,15 @@ match integer
       match class, class digit
 
 match inline-template
-  match class, class vertical-line
+  match class, class opening-angle
   match class, class template-line
-  match class, class vertical-line
+  match class, class closing-angle
+
+match opening-angle
+  match write, write <\<>
+
+match closing-angle
+  match write, write <\>>
 
 match template-line
   match chain
@@ -115,16 +119,16 @@ match inline-string
   match chain
     mount start, write 1
     match crown
-      match class, class escaped-pipe
-      match class, class non-pipe
+      match class, class escaped-closing-angle
+      match class, class non-closing-angle
 
-match escaped-pipe
+match escaped-closing-angle
   match class, class backslash
-  match class, class vertical-pipe
+  match class, class closing-angle
 
-match non-pipe
+match non-closing-angle
   match shift
-    match class, class vertical-pipe
+    match class, class closing-angle
 
 match inline-code
   match class, class colon
@@ -176,34 +180,31 @@ match multiline-template-body
       match class, class template-line
 
 match code
-  match write, write |#|
-  match write, write lowercase-ascii-letter
+  match write, write <#>
+  match class, class lowercase-ascii-letter
   match chain
     match class, class word-symbol
 
 match colon
-  match write, write |\:|
+  match write, write <:>
 
 match line-break
-  match write, write |#u000A|
+  match write, write #u000A
 
 match space
-  match write, write | |
+  match write, write < >
 
 match comma
-  match write, write |,|
+  match write, write <,>
 
 match backslash
-  match write, write |\\|
-
-match pipe
-  match write, write |\||
+  match write, write <\\>
 
 match open-parenthesis
-  match write, write |(|
+  match write, write <(>
 
 match close-parenthesis
-  match write, write |)|
+  match write, write <)>
 
 match digit
   match check

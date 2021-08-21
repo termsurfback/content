@@ -1,121 +1,175 @@
 
-trace json
-  trace class, class value
+match json
+  match class, class value
 
-trace value
-  trace crown
-    trace class, class string
-    trace class, class number
-    trace class, class object
-    trace class, class array
-    trace class, class boolean
-    trace class, class null
+match value
+  match crown
+    match class, class string
+    match class, class number
+    match class, class object
+    match class, class array
+    match class, class boolean
+    match class, class null
 
-trace string
-  trace shard, #u0022
-  trace chain
-    trace crown
-      trace class, class esc
-      trace class, class safecodepoint
-  trace shard, #u0022
+match string
+  match class, class quote
+  match chain
+    match crown
+      match class, class esc
+      match class, class safecodepoint
+  match class, class quote
 
-trace number
-  trace sieve
-    trace shard, #u002D
-    trace class, class integer
-    trace sieve
-      trace shard, #u002E
-      trace floor, 1
-        trace bound, #u0030, #u0039
-    trace sieve, trace class, class exponent
+match quote
+  match write, write #u0022
 
-trace integer
-  trace crown
-    trace shard, #u0030
-    trace class, class nonzero integer
+match safecodepoint
+  match shift
+    match crown
+      match write, write <">
+      match write, write <\\>
+      match bound
+        mount start, #u0000
+        mount front, #u001F
 
-class nonzero integer
-  trace bound, #u0031, #u0039
-  trace chain
-    trace bound, #u0030, #u0039
+match number
+  match sieve, match class, class minus-sign
+  match crown
+    match class, class float
+    match class, class integer
+  match sieve, match class, class exponent
 
-trace exponent
-  trace crown
-    trace shard, |E|
-    trace shard, |e|
-  trace sieve
-    trace crown
-      trace shard, |+|
-      trace shard, |-|
-  trace class, class integer
+match float
+  match class, class integer
+  match class, class decimal-point
+  match count
+    mount start, write 1
+    match class, class zero-through-nine
 
-trace object
-  trace shard, #u007B
-  trace chain, class whitespace
-  trace sieve
-    trace class, class pair
-    trace chain, class whitespace
-    trace chain
-      trace chain, class whitespace
-      trace shard, #u002C
-      trace chain, class whitespace
-      trace class, class pair
-  trace chain, class whitespace
-  trace shard, #u007D
+match zero-through-nine
+  match bound
+    mount start, write #u0030
+    mount front, write #u0039
 
-trace pair
-   trace class, class string
-   trace chain, class whitespace
-   trace shard, |:|
-   trace chain, class whitespace
-   trace class, class value
+match one-through-nine
+  match bound
+    mount start, write #u0031
+    mount front, write #u0039
 
-trace array
-  trace shard, #u005B
-  trace chain, class whitespace
-  trace sieve
-    trace class, class value
-    trace chain
-      trace class, class crown
-      trace class, class value
-  trace chain, class whitespace
-  trace shard, #u005D
+match minus-sign
+  match write, write #u002D
 
-trace boolean
-  trace crown
-    trace shard, |true|
-    trace shard, |false|
+match decimal-point
+  match write, write #u002E
 
-trace null
-  trace shard, |null|
+match integer
+  match crown
+    match write, write #u0030
+    match class, class nonzero-integer
 
-trace whitespace
-  trace crown
-    trace shard, #u0009
-    trace shard, #u000A
-    trace shard, #u000D
-    trace shard, #u0020
+match nonzero-integer
+  match class, class one-through-nine
+  match chain
+    match class, class zero-through-nine
 
-trace esc
-  trace shard, |\\|
-  trace crown
-    trace crown
-      trace shard, |"|
-      trace shard, |\\|
-      trace shard, |/|
-      trace shard, |b|
-      trace shard, |f|
-      trace shard, |n|
-      trace shard, |r|
-      trace shard, |t|
-    trace class, class unicode
+match exponent
+  match crown
+    match write, write <E>
+    match write, write <e>
+  match sieve, match class, class sign
+  match class, class integer
 
-trace unicode
-  trace shard, |u|
-  trace count, 4, class hex
+match sign
+  match crown
+    match write, write <+>
+    match write, write <->
 
-trace hex
-  trace crown
-    trace slice, 0, 9
-    trace slice, a, f
-    trace slice, A, F
+match object
+  match class, class open-brace
+  match chain, match class, class whitespace
+  match sieve
+    match class, class pair
+    match chain, match class, class whitespace
+    match chain
+      match chain, match class, class whitespace
+      match class, class comma
+      match chain, match class, class whitespace
+      match class, class pair
+      match chain, match class, class whitespace
+  match class, class close-brace
+
+match comma
+  match write, write #u002C
+
+match open-brace
+  match write, write #u007B
+
+match close-brace
+  match write, write #u007D
+
+match pair
+  match class, class string
+  match chain, match class, class whitespace
+  match class, class colon
+  match chain, match class, class whitespace
+  match class, class value
+
+match colon
+  match write, write <:>
+
+match array
+  match write, write #u005B
+  match chain, match class, class whitespace
+  match sieve
+    match class, class value
+    match chain
+      match class, class crown
+      match class, class value
+  match chain, match class, class whitespace
+  match write, write #u005D
+
+match boolean
+  match crown
+    match write, write <true>
+    match write, write <false>
+
+match null
+  match write, write <null>
+
+match whitespace
+  match crown
+    match write, write #u0009
+    match write, write #u000A
+    match write, write #u000D
+    match write, write #u0020
+
+match esc
+  match write, write <\\>
+  match crown
+    match crown
+      match write, write <">
+      match write, write <\\>
+      match write, write </>
+      match write, write <b>
+      match write, write <f>
+      match write, write <n>
+      match write, write <r>
+      match write, write <t>
+    match class, class unicode
+
+match unicode
+  match write, write <u>
+  match count
+    mount build, write 4
+    match class, class hex
+
+match hex
+  match crown
+    match bound
+      mount start, write 0
+      mount front, write 9
+    match bound
+      mount start, write <a>
+      mount front, write <f>
+    match bound
+      mount start, write <A>
+      mount front, write <F>

@@ -8,7 +8,7 @@ fetch ../field
     catch field template
 
 weave xo
-  state term
+  state term, chain term
 
   weave indented-term, class indented-term
     stack term
@@ -19,14 +19,14 @@ weave xo
 
 weave indented-term
   state name
-  state children
+  state children, chain term
 
   weave name
     store name
   weave inline-input
-    blend children
+    stack children
   weave nested-input
-    blend children
+    stack children
 
   build term
     mount name, share name
@@ -36,24 +36,27 @@ weave indented-term
 weave inline-input
   weave inline-parenthesized-input
     weave inline-value, class inline-value
+      throw term
   weave inline-non-parenthesized-input
     weave inline-value, class inline-value
+      throw term
 
 weave inline-value
   state value
 
-  weave inline-template
-    weave template-line
-
   weave number
-    start write
+    weave integer
+      start write
 
-    shift convert-string-to-number
-      mount string, share write
-      store number
-    build number
-      mount value, share number
-      store value
+      shift convert-string-to-integer
+        mount string, share write
+        store value
+    weave decimal
+      start write
+
+      shift convert-string-to-float
+        mount string, share write
+        store value
 
   weave code
     state type
@@ -64,20 +67,33 @@ weave inline-value
     weave word-symbol
       store value
 
-  weave inline-input
+  weave inline-template
+    weave template-line, class template-line
 
-weave inline-template
+  weave path
+  weave selector
 
 weave template-line
-  weave inline-string
-  weave inline-code
+  state chunk
+
+  weave inline-string, class inline-string
+    stack chunk
+  weave inline-code, class inline-code
+    stack chunk
+
+  build template
+    mount chunk, share chunk
+    leave build
 
 weave inline-code
   weave name
   weave inline-parenthesized-input
+    weave inline-value, class inline-value
 
 weave nested-input
   weave nested-template
     weave multiline-template-body
       weave template-line
   weave indented-term
+
+weave inline-string

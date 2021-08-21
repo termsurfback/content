@@ -1,0 +1,71 @@
+
+weave json
+  weave value
+    leave build
+
+weave value
+  weave string, class string
+    leave build
+  weave number, class number
+    start write
+    shift parse-string-to-number
+      mount write, share write
+      leave build
+  weave object, class object
+    leave build
+  weave array, class array
+    leave build
+  weave boolean
+    start write
+    shift parse-string-to-boolean
+      mount write, share write
+      leave build
+  weave null
+    start write
+    shift parse-string-to-null
+      mount write, share write
+      leave build
+
+weave string
+  state symbol
+
+  weave esc
+    stack symbol
+  weave safecodepoint
+    stack symbol
+
+  leave build, share symbol
+
+weave number
+  weave minus-sign
+  weave integer
+  weave float
+  weave exponent
+    weave sign
+    weave integer
+
+weave object
+  weave pair
+
+weave pair
+  weave string
+    store key
+  weave value
+    store value
+  build pair
+    mount key, share key
+    mount value, share value
+    leave build
+
+weave array
+  weave value
+    stack item
+  leave build, share item
+
+weave esc
+  weave unicode
+
+weave unicode
+  weave hex
+
+weave hex
